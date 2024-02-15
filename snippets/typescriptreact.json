@@ -1,0 +1,61 @@
+{
+  "Typescript React FC w/Props": {
+    "prefix": "rafcp",
+    "body": [
+      "interface ${TM_FILENAME_BASE}Props {",
+      "\t${1}",
+      "}",
+      "",
+      "const ${TM_FILENAME_BASE}: React.FC<${TM_FILENAME_BASE}Props> = ({",
+      "\t${1}",
+      "}) => {",
+      "\treturn (",
+      "\t\t<div>",
+      "\t\t\t${TM_FILENAME_BASE}",
+      "\t\t</div>",
+      "\t)",
+      "}",
+      "",
+      "export default ${TM_FILENAME_BASE};"
+    ],
+    "description": "TSX Component with Props"
+  },
+  "Typescript React FC w/Children": {
+    "prefix": "rafcc",
+    "body": [
+      "interface ${2:$TM_FILENAME_BASE}Props {",
+      "\tchildren: React.ReactNode;",
+      "\t${1}",
+      "}",
+      "",
+      "const ${TM_FILENAME_BASE}: React.FC<${TM_FILENAME_BASE}Props> = ({",
+      "\tchildren,",
+      "\t${1}",
+      "}) => {",
+      "\treturn (",
+      "\t\t<div>",
+      "\t\t\t{children}",
+      "\t\t</div>",
+      "\t)",
+      "}",
+      "",
+      "export default ${TM_FILENAME_BASE};"
+    ],
+    "description": "TSX Component with Props"
+  },
+  "Typescript React FC": {
+    "prefix": "rafce",
+    "body": [
+      "const ${TM_FILENAME_BASE} = () => {",
+      "\treturn (",
+      "\t\t<div>",
+      "\t\t\t${TM_FILENAME_BASE}",
+      "\t\t</div>",
+      "\t)",
+      "}",
+      "",
+      "export default ${TM_FILENAME_BASE};"
+    ],
+    "description": "TSX Component"
+  }
+}

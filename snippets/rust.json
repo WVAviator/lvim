@@ -1,0 +1,29 @@
+{
+  "Create test mod": {
+    "prefix": "rstm",
+    "body": [
+      "#[cfg(test)]",
+      "mod test {",
+      "\tuse super::*;",
+      "\t",
+      "\t#[test]",
+      "\tfn ${1}() {",
+      "\t    ${0}",
+      "\t}",
+      "}"
+    ],
+    "description": "Create test mod at bottom of Rust file."
+  },
+  "Create serde dto struct": {
+    "prefix": "rsss",
+    "body": [
+      "use serde::{Serialize, Deserialize};",
+      "",
+      "#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]",
+      "pub struct ${1} {",
+      "\t\t$0",
+      "}"
+    ],
+    "description": "Creates a struct with serde serialize and deserialize derived."
+  }
+}
