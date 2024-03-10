@@ -64,6 +64,20 @@ lvim.plugins = {
     end
   },
   {
+    "rebelot/kanagawa.nvim",
+    config = function()
+      require("kanagawa").setup({
+        commentStyle = { italic = false },
+        keywordStyle = { italic = false },
+        overrides = function()
+          return {
+            ["@variable.builtin"] = { italic = false },
+          }
+        end
+      })
+    end
+  },
+  {
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
@@ -73,57 +87,10 @@ lvim.plugins = {
       })
     end
   },
-  {
-    "simrat39/rust-tools.nvim",
-    config = function()
-      -- local lsp_installer_servers = require("nvim-lsp-installer.servers")
-      -- local _, requested_server = lsp_installer_servers.get_server("rust_analyzer")
-      require("rust-tools").setup({
-        tools = {
-          autoSetHints = true,
-          -- hover_with_actions = true,
-          -- options same as lsp hover / vim.lsp.util.open_floating_preview()
-          hover_actions = {
-
-            -- the border that is used for the hover window
-            -- see vim.api.nvim_open_win()
-            border = {
-              { "╭", "FloatBorder" },
-              { "─", "FloatBorder" },
-              { "╮", "FloatBorder" },
-              { "│", "FloatBorder" },
-              { "╯", "FloatBorder" },
-              { "─", "FloatBorder" },
-              { "╰", "FloatBorder" },
-              { "│", "FloatBorder" },
-            },
-
-            -- whether the hover action window gets automatically focused
-            -- default: false
-            auto_focus = true,
-          },
-          runnables = {
-            use_telescope = true,
-          },
-        },
-        server = {
-          on_init = require("lvim.lsp").common_on_init,
-          on_attach = function(client, bufnr)
-            require("lvim.lsp").common_on_attach(client, bufnr)
-            local rt = require("rust-tools")
-            -- Hover actions
-            vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
-            -- Code action groups
-            vim.keymap.set("n", "<leader>lA", rt.code_action_group.code_action_group, { buffer = bufnr })
-          end,
-        },
-      })
-    end,
-    ft = { "rust", "rs" },
-  }
 }
 
-lvim.colorscheme = "tokyonight-night"
+lvim.colorscheme = "kanagawa-wave"
+
 -- Below config is required to prevent copilot overriding Tab with a suggestion
 -- when you're just trying to indent!
 local has_words_before = function()
@@ -143,6 +110,30 @@ lvim.builtin.cmp.mapping["<Tab>"] = on_tab
 
 -- Emmet Setup
 require("lvim.lsp.manager").setup("emmet_ls")
+
+-- Not sure why this doesn't work
+-- require("lvim.lsp.manager").setup("rust_analyzer", {
+--   settings = {
+--     ["rust_analyzer"] = {
+--       rustfmt = {
+--         overrideCommand = { "leptosfmt", "--stdin", "--rustfmt" },
+--       }
+--     }
+--   }
+-- })
+
+-- Using this instead
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = "*.rs",
+  callback = function()
+    local found = vim.fn.search("view!", "nw")
+    if found > 0 then
+      local filepath = vim.fn.expand('%:p')
+      vim.fn.system('leptosfmt ' .. filepath)
+      vim.cmd('edit!')
+    end
+  end
+})
 
 require("lvim.lsp.manager").setup("cssls", {
   settings = {
@@ -167,6 +158,16 @@ require("lvim.lsp.manager").setup("cssls", {
   },
 })
 
+
+require("lvim.lsp.manager").setup("tailwindcss", {
+  filetypes = { "css", "scss", "html", "javascript", "javascriptreact", "typescript", "typescriptreact", "rust" },
+  init_options = {
+    userLanguages = {
+      rust = "html",
+    }
+  },
+  root_dir = require("lspconfig").util.root_pattern("tailwind.config.js"),
+})
 
 local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
